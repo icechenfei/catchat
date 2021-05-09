@@ -103,3 +103,5 @@ ENV/
 # Development
 .idea
 *.db
+
+.flaskenv
