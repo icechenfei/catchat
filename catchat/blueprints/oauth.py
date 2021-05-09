@@ -6,14 +6,21 @@
     :license: MIT, see LICENSE for more details.
 """
 import os
+import logging
+from pathlib import Path
 
 from flask import flash, redirect, url_for, Blueprint, abort
 from flask_login import login_user, current_user
 
 from catchat.extensions import oauth, db
 from catchat.models import User
+from dotenv import load_dotenv, find_dotenv
 
 oauth_bp = Blueprint('oauth', __name__)
+
+# use gunicorn catnot load flask env. must use python-dotenv to load this file
+env_path= Path(".flaskenv")
+load_dotenv(dotenv_path=env_path ,verbose=True)
 
 github = oauth.remote_app(
     name='github',
@@ -27,37 +34,37 @@ github = oauth.remote_app(
     authorize_url='https://github.com/login/oauth/authorize',
 )
 
-google = oauth.remote_app(
-    name='google',
-    consumer_key=os.getenv('GOOGLE_CLIENT_ID'),
-    consumer_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
-    request_token_params={'scope': 'email'},
-    base_url='https://www.googleapis.com/oauth2/v1/',
-    request_token_url=None,
-    access_token_method='POST',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-)
-twitter = oauth.remote_app(
-    name='twitter',
-    consumer_key=os.getenv('TWITTER_CLIENT_ID'),
-    consumer_secret=os.getenv('TWITTER_CLIENT_SECRET'),
-    base_url='https://api.twitter.com/1.1/',
-    request_token_url='https://api.twitter.com/oauth/request_token',
-    access_token_url='https://api.twitter.com/oauth/access_token',
-    authorize_url='https://api.twitter.com/oauth/authorize',
-)
+# google = oauth.remote_app(
+#     name='google',
+#     consumer_key=os.getenv('GOOGLE_CLIENT_ID'),
+#     consumer_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+#     request_token_params={'scope': 'email'},
+#     base_url='https://www.googleapis.com/oauth2/v1/',
+#     request_token_url=None,
+#     access_token_method='POST',
+#     access_token_url='https://accounts.google.com/o/oauth2/token',
+#     authorize_url='https://accounts.google.com/o/oauth2/auth',
+# )
+# twitter = oauth.remote_app(
+#     name='twitter',
+#     consumer_key=os.getenv('TWITTER_CLIENT_ID'),
+#     consumer_secret=os.getenv('TWITTER_CLIENT_SECRET'),
+#     base_url='https://api.twitter.com/1.1/',
+#     request_token_url='https://api.twitter.com/oauth/request_token',
+#     access_token_url='https://api.twitter.com/oauth/access_token',
+#     authorize_url='https://api.twitter.com/oauth/authorize',
+# )
 
 providers = {
-    'github': github,
-    'google': google,
-    'twitter': twitter
+    'github': github
+    # 'google': google,
+    # 'twitter': twitter
 }
 
 profile_endpoints = {
     'github': 'user',
-    'google': 'userinfo',
-    'twitter': 'account/verify_credentials.json?include_email=true'
+    # 'google': 'userinfo',
+    # 'twitter': 'account/verify_credentials.json?include_email=true'
 }
 
 
@@ -100,6 +107,8 @@ def oauth_login(provider_name):
 
 @oauth_bp.route('/callback/<provider_name>')
 def oauth_callback(provider_name):
+    import pdb
+    pdb.set_trace()
     if provider_name not in providers.keys():
         abort(404)
 

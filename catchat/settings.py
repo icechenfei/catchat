@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-    :author: Grey Li (李辉)
-    :url: http://greyli.com
-    :copyright: © 2018 Grey Li <withlihui@gmail.com>
-    :license: MIT, see LICENSE for more details.
-"""
 import os
 import sys
 
@@ -23,6 +17,7 @@ class BaseConfig:
     CATCHAT_ADMIN_EMAIL = os.getenv('CATCHAT_ADMIN_EMAIL', 'admin@helloflask.com')
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev key')
+    # SECRET_KEY = "icechenfei"
 
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', prefix + os.path.join(basedir, 'data.db'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
